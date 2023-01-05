@@ -210,7 +210,7 @@ void AudioPicker::sendAudioPickerFinishedMessage (void* picker, void* info)
         MPMediaItemCollection* mediaItemCollection = (MPMediaItemCollection*) info;
 
         Array<void*> pickedMPMediaItems;
-        for (uint64 i = 0; i < mediaItemCollection.count; ++i)
+        for (uint32 i = 0; i < mediaItemCollection.count; ++i)
         {
             MPMediaItem* mediaItem = [mediaItemCollection.items objectAtIndex: i];
             pickedMPMediaItems.add (mediaItem);

@@ -202,7 +202,7 @@ public:
                  numSamples);                                         
 
             for (int i = 0; i < numChannels; i++)
-                memcpy (destSamples[i] + startOffsetInDestBuffer, deinterleavedSamples[i], sizeof (float) * (uint64)numSamples);
+                memcpy (destSamples[i] + startOffsetInDestBuffer, deinterleavedSamples[i], sizeof (float) * numSamples);
 
             lastReadPosition += numSamples;
         }
