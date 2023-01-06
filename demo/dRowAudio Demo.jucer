@@ -32,8 +32,8 @@
     </XCODE_MAC>
     <XCODE_IPHONE targetFolder="Builds/iOS" objCExtraSuffix="FuN3DO" UIStatusBarHidden="1"
                   bigIcon="vTRqOY" smallIcon="vTRqOY" extraCompilerFlags="-Wall&#10;-pedantic&#10;-Wconversion"
-                  iosDevelopmentTeamID="QW276UHF22" iosScreenOrientation="UIInterfaceOrientationPortrait"
-                  iPadScreenOrientation="UIInterfaceOrientationPortrait" microphonePermissionNeeded="1">
+                  iosScreenOrientation="UIInterfaceOrientationPortrait" iPadScreenOrientation="UIInterfaceOrientationPortrait"
+                  microphonePermissionNeeded="1">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="dRowAudio Demo"
                        osxSDK="default" osxCompatibility="default" headerPath="" defines=""
