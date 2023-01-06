@@ -31,31 +31,20 @@
 
 #include "MainWindow.h"
 
-class dRowAudioDemoApplication : public JUCEApplication
+class dRowAudioDemoApplication : public juce::JUCEApplication
 {
 public:
     dRowAudioDemoApplication()
     {
     }
 
-    void initialise (const String&) override
+    void initialise (const juce::String&) override
     {
 #if JUCE_DEBUG && DROWAUDIO_UNIT_TESTS
-        UnitTestRunner testRunner;
+        juce::UnitTestRunner testRunner;
         testRunner.runAllTests();
 #endif
-
-//        splash = new SplashScreen (getApplicationName(),
-//                                   ImageCache::getFromMemory (BinaryData::splash_screen_png, 
-//                                                              BinaryData::splash_screen_pngSize),
-//                                   #if JUCE_MAC
-//                                    true);
-//                                   #else
-//                                    false);
-//                                   #endif
-//
-//        splash->deleteAfterDelay (RelativeTime (2.0), true);
-        
+       
         mainWindow = std::make_unique<MainAppWindow>(); 
     }
 
@@ -64,14 +53,13 @@ public:
         mainWindow = nullptr;
     }
 
-    void systemRequestedQuit() override                     { quit(); }
-    const String getApplicationName() override              { return ProjectInfo::projectName; }
-    const String getApplicationVersion() override           { return ProjectInfo::versionString; }
-    bool moreThanOneInstanceAllowed() override              { return true; }
-    void anotherInstanceStarted (const String&) override    { }
+    void systemRequestedQuit() override                             { quit(); }
+    const juce::String getApplicationName() override                { return ProjectInfo::projectName; }
+    const juce::String getApplicationVersion() override             { return ProjectInfo::versionString; }
+    bool moreThanOneInstanceAllowed() override                      { return true; }
+    void anotherInstanceStarted (const juce::String&) override      { }
 
 private:
-    SplashScreen* splash;
     std::unique_ptr<MainAppWindow> mainWindow;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (dRowAudioDemoApplication)

@@ -36,40 +36,40 @@
 
 #if DROWAUDIO_USE_CURL
 
-class LocalDirectoryListBoxModel : public ListBoxModel,
-                                   public ChangeBroadcaster
+class LocalDirectoryListBoxModel : public juce::ListBoxModel,
+                                   public juce::ChangeBroadcaster
 {
 public:
     LocalDirectoryListBoxModel();
 
     //==============================================================================
-    const File& getCurrentWorkingDirectory() const { return currentWorkingDirectory; }
+    const juce::File& getCurrentWorkingDirectory() const { return currentWorkingDirectory; }
 
     void refresh();
-    void setContents (const StringArray& newContents);
+    void setContents (const juce::StringArray& newContents);
 
     //==============================================================================
     int getNumRows() override;
     void paintListBoxItem (int rowNumber,
-                           Graphics& g,
+                           juce::Graphics& g,
                            int width, int height,
                            bool rowIsSelected) override;
-    void listBoxItemDoubleClicked (int row, const MouseEvent& e) override;
-    var getDragSourceDescription (const SparseSet<int>& currentlySelectedRows) override;
+    void listBoxItemDoubleClicked (int row, const juce::MouseEvent& e) override;
+    juce::var getDragSourceDescription (const juce::SparseSet<int>& currentlySelectedRows) override;
 
 private:
     //==============================================================================
-    StringArray itemList;
-    File currentWorkingDirectory;
+    juce::StringArray itemList;
+    juce::File currentWorkingDirectory;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (LocalDirectoryListBoxModel)
 };
 
 //==============================================================================
-class LocalDirectoryListBox : public ListBox,
-                              public ChangeListener,
-                              public DragAndDropTarget
+class LocalDirectoryListBox : public juce::ListBox,
+                              public juce::ChangeListener,
+                              public juce::DragAndDropTarget
 {
 public:
     LocalDirectoryListBox();
@@ -77,8 +77,8 @@ public:
     ~LocalDirectoryListBox();
 
     //==============================================================================
-    void paintOverChildren (Graphics& g) override;
-    void changeListenerCallback (ChangeBroadcaster* source) override;
+    void paintOverChildren (juce::Graphics& g) override;
+    void changeListenerCallback (juce::ChangeBroadcaster* source) override;
     bool isInterestedInDragSource (const SourceDetails& dragSourceDetails) override;
     void itemDragEnter (const SourceDetails& dragSourceDetails) override;
     void itemDragExit (const SourceDetails& dragSourceDetails) override;

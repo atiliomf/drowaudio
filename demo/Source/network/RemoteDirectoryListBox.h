@@ -36,15 +36,15 @@
 
 #if DROWAUDIO_USE_CURL
 
-class RemoteDirectoryListBoxModel : public ListBoxModel,
-                                    public ChangeBroadcaster
+class RemoteDirectoryListBoxModel : public juce::ListBoxModel,
+public juce::ChangeBroadcaster
 {
 public:
     RemoteDirectoryListBoxModel();
 
     //==============================================================================
     void setCURLSession (CURLEasySession* sessionToControl);
-    void setContents (const StringArray& newContents);
+    void setContents (const juce::StringArray& newContents);
 
     void refresh();
 
@@ -52,15 +52,15 @@ public:
     /** @internal */
     int getNumRows() override;
     /** @internal */
-    void paintListBoxItem (int rowNumber, Graphics& g, int width, int height, bool rowIsSelected) override;
+    void paintListBoxItem (int rowNumber, juce::Graphics& g, int width, int height, bool rowIsSelected) override;
     /** @internal */
-    void listBoxItemDoubleClicked (int row, const MouseEvent& e) override;
+    void listBoxItemDoubleClicked (int row, const juce::MouseEvent& e) override;
     /** @internal */
-    var getDragSourceDescription (const SparseSet<int>& currentlySelectedRows) override;
+    juce::var getDragSourceDescription (const juce::SparseSet<int>& currentlySelectedRows) override;
 
 private:
     //==============================================================================
-    StringArray itemList;
+    juce::StringArray itemList;
     CURLEasySession* curlSession;
 
     //==============================================================================
@@ -68,9 +68,9 @@ private:
 };
 
 //==============================================================================
-class RemoteDirectoryListBox : public ListBox,
-                               public ChangeListener,
-                               public DragAndDropTarget
+class RemoteDirectoryListBox : public juce::ListBox,
+                               public juce::ChangeListener,
+                               public juce::DragAndDropTarget
 {
 public:
     RemoteDirectoryListBox();
@@ -80,15 +80,15 @@ public:
     //==============================================================================
     CURLEasySession& getCURLSession() { return session; }
 
-    String getLastUrl() const { return session.getCurrentWorkingDirectory(); }
+    juce::String getLastUrl() const { return session.getCurrentWorkingDirectory(); }
 
     void refresh();
 
     //==============================================================================
     /** @internal */
-    void paintOverChildren (Graphics& g) override;
+    void paintOverChildren (juce::Graphics& g) override;
     /** @internal */
-    void changeListenerCallback (ChangeBroadcaster* source) override;
+    void changeListenerCallback (juce::ChangeBroadcaster* source) override;
     /** @internal */
     bool isInterestedInDragSource (const SourceDetails& dragSourceDetails) override;
     /** @internal */

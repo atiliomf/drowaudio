@@ -50,8 +50,8 @@
         ITunesLibrary::getInstance()->setLibraryFile (ITunesLibrary::getDefaultITunesLibraryFile());
     @endcode
 */
-class MusicLibraryTable : public Component,
-                          public TableListBoxModel,
+class MusicLibraryTable : public juce::Component,
+                          public juce::TableListBoxModel,
                           public ITunesLibrary::Listener
 {
 public:
@@ -71,10 +71,10 @@ public:
     void setLibraryToUse (ITunesLibrary* library);
 
     /** Filters the table to only rows containing the given text. */
-    void setFilterText (const String& filterText);
+    void setFilterText (const juce::String& filterText);
 
     /** Returns the table list box component. */
-    TableListBox& getTableListBox() { return table; }
+    juce::TableListBox& getTableListBox() { return table; }
 
     //==============================================================================
     /** A set of colour IDs to use to change the colour of various aspects of the main table.
@@ -130,9 +130,9 @@ public:
     /** @internal */
     int getNumRows() override;
     /** @internal */
-    void paintRowBackground (Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
+    void paintRowBackground (juce::Graphics& g, int rowNumber, int width, int height, bool rowIsSelected) override;
     /** @internal */
-    void paintCell (Graphics& g,
+    void paintCell (juce::Graphics& g,
                     int rowNumber,
                     int columnId,
                     int width, int height,
@@ -146,18 +146,18 @@ public:
     /** @internal */
     void focusOfChildComponentChanged (FocusChangeType cause) override;
     /** @internal */
-    var getDragSourceDescription (const SparseSet<int>& currentlySelectedRows) override;
+    juce::var getDragSourceDescription (const juce::SparseSet<int>& currentlySelectedRows) override;
 
 private:
     //==============================================================================
-    Font font;
+    juce::Font font;
     ITunesLibrary* currentLibrary;
-    TableListBox table;
-    String currentFilterText;
+    juce::TableListBox table;
+    juce::String currentFilterText;
 
-    ValueTree dataList;
-    ValueTree filteredDataList;
-    SortedSet<int> selectedRowsLibIds;
+    juce::ValueTree dataList;
+    juce::ValueTree filteredDataList;
+    juce::SortedSet<int> selectedRowsLibIds;
 
     int filteredNumRows;
     bool finishedLoading;

@@ -66,7 +66,7 @@ bool UnityProjectBuilder::run()
     }
 
     logOutput ("Valid project found...");
-    ValueTree mainGroupTree (project.getChildWithName (Ids::mainGroup));
+    juce::ValueTree mainGroupTree (project.getChildWithName (Ids::mainGroup));
 
     if (! mainGroupTree.isValid())
     {
@@ -84,7 +84,7 @@ bool UnityProjectBuilder::run()
     const Array<File> cppFiles (buildUnityCpp (sourceDir));
 
     // add unity files
-    ValueTree unityGroup (Ids::group);
+    juce::ValueTree unityGroup (Ids::group);
     unityGroup.setProperty (Ids::idProp, createAlphaNumericUID(), nullptr);
     unityGroup.setProperty (Ids::nameProp, "Unity", nullptr);
     mainGroupTree.addChild (unityGroup, -1, nullptr);
@@ -95,7 +95,7 @@ bool UnityProjectBuilder::run()
 
         if (cppFile.exists())
         {
-            ValueTree cppTree (Ids::file);
+            juce::ValueTree cppTree (Ids::file);
             cppTree.setProperty (Ids::idProp, createAlphaNumericUID(), nullptr);
             cppTree.setProperty (Ids::nameProp, cppFile.getFileName(), nullptr);
             cppTree.setProperty (Ids::compileProp, true, nullptr);
@@ -137,7 +137,7 @@ void UnityProjectBuilder::recurseGroup (ValueTree group, const File& sourceDir)
 
     for (int i = 0; i < numChildren; ++i)
     {
-        ValueTree child (group.getChild (i));
+        juce::ValueTree child (group.getChild (i));
 
         if (child.hasType (Ids::group))
             recurseGroup (child, sourceDir);
@@ -148,7 +148,7 @@ void UnityProjectBuilder::recurseGroup (ValueTree group, const File& sourceDir)
 
 void UnityProjectBuilder::parseFile (ValueTree file, const File& sourceDir)
 {
-    const String path (file.getProperty (Ids::fileProp).toString());
+    const juce::String path (file.getProperty (Ids::fileProp).toString());
     const File sourceFile (projectFile.getSiblingFile (path));
     const bool compile = bool (file.getProperty (Ids::compileProp));
 
@@ -182,7 +182,7 @@ Array<File> UnityProjectBuilder::buildUnityCpp (const File& destDir)
 
 File UnityProjectBuilder::buildUnityCpp (const File& destDir, int unityNum, const Range<int> fileRange)
 {
-    const File cppFile (destDir.getChildFile (unityName + String (unityNum)).withFileExtension (".cpp"));
+    const File cppFile (destDir.getChildFile (unityName + juce::String (unityNum)).withFileExtension (".cpp"));
     logOutput ("Building Unity cpp file \"" + cppFile.getFullPathName() + "\"...");
 
     if (cppFile.existsAsFile())
@@ -201,7 +201,7 @@ void UnityProjectBuilder::updateBuildDirectories()
     if (buildDir.isEmpty())
         return;
 
-    ValueTree exportsTree (project.getChildWithName (Ids::exportFormats));
+    juce::ValueTree exportsTree (project.getChildWithName (Ids::exportFormats));
 
     if (! exportsTree.isValid())
         return;
@@ -210,13 +210,13 @@ void UnityProjectBuilder::updateBuildDirectories()
 
     for (int i = 0; i < numExports; ++i)
     {
-        ValueTree exporter (exportsTree.getChild (i));
+        juce::ValueTree exporter (exportsTree.getChild (i));
 
         if (exporter.hasProperty (Ids::targetFolderProp))
         {
             logOutput ("Updating exporter " + exporter.getType().toString());
-            const String oldTarget (exporter.getProperty (Ids::targetFolderProp).toString());
-            String newTarget (buildDir);
+            const juce::String oldTarget (exporter.getProperty (Ids::targetFolderProp).toString());
+            juce::String newTarget (buildDir);
 
             if (oldTarget.containsChar ('/'))
                  newTarget << oldTarget.fromLastOccurrenceOf ("/", true, false);
@@ -226,18 +226,18 @@ void UnityProjectBuilder::updateBuildDirectories()
     }
 }
 
-void UnityProjectBuilder::logOutput (const String& output)
+void UnityProjectBuilder::logOutput (const juce::String& output)
 {
     if (shouldLog)
         std::cout << output << std::endl;
 }
 
-void UnityProjectBuilder::setUnityFileName (const String& fileName)
+void UnityProjectBuilder::setUnityFileName (const juce::String& fileName)
 {
     unityName = fileName;
 }
 
-void UnityProjectBuilder::setBuildDirectoryName (const String& buildDirName)
+void UnityProjectBuilder::setBuildDirectoryName (const juce::String& buildDirName)
 {
     buildDir = buildDirName;
 }
@@ -248,7 +248,7 @@ void UnityProjectBuilder::saveProject (const File& introjucerAppFile)
         return;
 
     logOutput("Resaving Introjucer project...");
-    StringArray args;
+    juce::StringArray args;
     args.add (getExeFromApp (introjucerAppFile).getFullPathName());
     args.add ("--resave");
     args.add (unityProjectFile.getFullPathName());
@@ -281,7 +281,7 @@ File UnityProjectBuilder::getExeFromApp (const File& app)
 String UnityProjectBuilder::createAlphaNumericUID()
 {
     // copied from Introjucer
-    String uid;
+    juce::String uid;
     const char chars[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
     Random r;
 

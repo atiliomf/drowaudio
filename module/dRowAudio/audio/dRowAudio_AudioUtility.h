@@ -62,28 +62,28 @@ static inline double secondsToMins (double seconds)
 
 /** Converts a time in seconds to a number of samples for a given sample rate.
  */
-static inline int64 secondsToSamples (double timeSeconds, double sampleRate)
+static inline juce::int64 secondsToSamples (double timeSeconds, double sampleRate)
 {
-    return (int64) (timeSeconds * sampleRate);
+    return (juce::int64) (timeSeconds * sampleRate);
 }
 
 /** Converts a time in milliseconds to a number of samples for a given sample rate.
  */
-static inline int64 msToSamples (double timeMs, double sampleRate)
+static inline juce::int64 msToSamples (double timeMs, double sampleRate)
 {
-    return (int64) (timeMs * 0.001 * sampleRate);
+    return (juce::int64) (timeMs * 0.001 * sampleRate);
 }
 
 /** Converts a number of samples to a time in ms for a given sample rate.
  */
-static inline double samplesToMs (int64 numSamples, double sampleRate)
+static inline double samplesToMs (juce::int64 numSamples, double sampleRate)
 {
     return (1000 * (numSamples / sampleRate));
 }
 
 /** Converts a number of samples to a time in seconds for a given sample rate.
  */
-static inline double samplesToSeconds (int64 numSamples, double sampleRate)
+static inline double samplesToSeconds (juce::int64 numSamples, double sampleRate)
 {
     return (numSamples / sampleRate);
 }
@@ -120,41 +120,41 @@ static inline double midiToFrequency (double midiNoteNumber)
 
 /** Converts a time in seconds to a timecode string.
  */
-static inline String timeToTimecodeString (const double seconds)
+static inline juce::String timeToTimecodeString (const double seconds)
 {
     const double absSecs = std::abs (seconds);
-    const String sign ((seconds < 0) ? "-" : "");
+    const juce::String sign ((seconds < 0) ? "-" : "");
 
     const int hours = (int) (absSecs / (60.0 * 60.0));
     const int mins  = ((int) (absSecs / 60.0)) % 60;
     const int secs  = ((int) absSecs) % 60;
 
-    String t (sign);
+    juce::String t (sign);
 
-    t << String (hours).paddedLeft ('0', 2) << ":"
-      << String (mins).paddedLeft ('0', 2) << ":"
-      << String (secs).paddedLeft ('0', 2) << ":"
-      << String (roundToInt (absSecs * 1000) % 1000).paddedLeft ('0', 2);
+    t << juce::String (hours).paddedLeft ('0', 2) << ":"
+      << juce::String (mins).paddedLeft ('0', 2) << ":"
+      << juce::String (secs).paddedLeft ('0', 2) << ":"
+      << juce::String (juce::roundToInt (absSecs * 1000) % 1000).paddedLeft ('0', 2);
     return t;
 }
 
 /** Converts a time in seconds to a timecode string displaying mins, secs and 1/10th secs.
  */
-static inline String timeToTimecodeStringLowRes (const double seconds)
+static inline juce::String timeToTimecodeStringLowRes (const double seconds)
 {
     const double absSecs = std::abs (seconds);
-    const String sign ((seconds < 0) ? "-" : "");
+    const juce::String sign ((seconds < 0) ? "-" : "");
 
 //    const int hours = (int) (absSecs * oneOver60Squared);
     const int mins  = ((uint32) (absSecs * oneOver60)) % 60u;
     const int secs  = ((uint32) absSecs) % 60u;
     const int tenthSecs  = (int) ((absSecs - (int) absSecs) * 10);
 
-    String t (sign);
+    juce::String t (sign);
 
-    t << String (mins).paddedLeft ('0', 2) << ":"
-      << String (secs).paddedLeft ('0', 2) << "."
-      << String (tenthSecs).paddedLeft ('0', 0);
+    t << juce::String (mins).paddedLeft ('0', 2) << ":"
+      << juce::String (secs).paddedLeft ('0', 2) << "."
+      << juce::String (tenthSecs).paddedLeft ('0', 0);
     return t;
 }
 
@@ -162,35 +162,35 @@ static inline String timeToTimecodeStringLowRes (const double seconds)
     This is useful when displaying times as hrs, mins secs etc.
     as it will only display the units needed.
  */
-static inline String secondsToTimeLength (double numSeconds)
+static inline juce::String secondsToTimeLength (double numSeconds)
 {
     double decimalTime = numSeconds / 60000.0;
 
     int hrs = 0;
     int mins = (int) decimalTime;
-    int secs = roundToInt ((decimalTime - mins) * 60.0);
+    int secs = juce::roundToInt ((decimalTime - mins) * 60.0);
 
-    String timeString;
+    juce::String timeString;
 
     if (mins > 59)
     {
         hrs = mins / 60;
         mins -= hrs * 60;
 
-        timeString << String (hrs) << ":"
-        << String (mins).paddedLeft ('0', 2) << ":";
+        timeString << juce::String (hrs) << ":"
+        << juce::String (mins).paddedLeft ('0', 2) << ":";
     }
     else
-        timeString << String (mins) << ":";
+        timeString << juce::String (mins) << ":";
 
-    timeString << String (secs).paddedLeft ('0', 2);
+    timeString << juce::String (secs).paddedLeft ('0', 2);
 
     return timeString;
 }
 
 /** Formats a CurretPositionInfo to a bars/beats string.
  */
-static inline String ppqToBarsBeatsString (double ppq,
+static inline juce::String ppqToBarsBeatsString (double ppq,
                                            double /*lastBarPPQ*/,
                                            int numerator,
                                            int denominator)
@@ -205,14 +205,14 @@ static inline String ppqToBarsBeatsString (double ppq,
     const int beat      = ((int) beats) + 1;
     const int ticks     = ((int) (fmod (beats, 1.0) * 960.0));
 
-    String s;
+    juce::String s;
     s << bar << '|' << beat << '|' << ticks;
     return s;
 }
 
 /** Compares a filename extension with a wildcard string.
  */
-static inline bool matchesAudioWildcard (const String& extensionToTest, const String& wildcard, const bool ignoreCase=true)
+static inline bool matchesAudioWildcard (const juce::String& extensionToTest, const juce::String& wildcard, const bool ignoreCase=true)
 {
     return ignoreCase ? wildcard.containsIgnoreCase (extensionToTest)
                       : wildcard.contains (extensionToTest);
@@ -221,14 +221,14 @@ static inline bool matchesAudioWildcard (const String& extensionToTest, const St
 /** Converts a block of audio sample to floating point samples if the reader
     used an integer format.
  */
-static inline void convertToFloat (AudioFormatReader* reader, void* sourceBuffer, float* destBuffer, int numSamples)
+static inline void convertToFloat (juce::AudioFormatReader* reader, void* sourceBuffer, float* destBuffer, int numSamples)
 {
     if (reader != nullptr)
     {
         if (! reader->usesFloatingPointData)
         {
-            juce::AudioData::ConverterInstance<juce::AudioData::Pointer<juce::AudioData::Int32,   juce::AudioData::NativeEndian, AudioData::NonInterleaved, AudioData::Const>,
-                                               juce::AudioData::Pointer<juce::AudioData::Float32, juce::AudioData::NativeEndian, AudioData::NonInterleaved, AudioData::NonConst>> converter;
+            juce::AudioData::ConverterInstance<juce::AudioData::Pointer<juce::AudioData::Int32,   juce::AudioData::NativeEndian, juce::AudioData::NonInterleaved, juce::AudioData::Const>,
+                                               juce::AudioData::Pointer<juce::AudioData::Float32, juce::AudioData::NativeEndian, juce::AudioData::NonInterleaved, juce::AudioData::NonConst>> converter;
 
             converter.convertSamples ( destBuffer, sourceBuffer, numSamples );
         }
@@ -245,7 +245,7 @@ static inline void convertToFloat (AudioFormatReader* reader, void* sourceBuffer
 
     This can be used to find out how many bytes to pass to isAudioSampleBuffer().
  */
-static inline size_t getNumBytesForAudioSampleBuffer (const AudioSampleBuffer& buffer)
+static inline size_t getNumBytesForAudioSampleBuffer (const juce::AudioSampleBuffer& buffer)
 {
     const int channelListSize = (buffer.getNumChannels() + 1) * (int) sizeof (float*);
     const int sampleDataSize = buffer.getNumSamples() * buffer.getNumChannels() * (int) sizeof (float);
@@ -272,7 +272,7 @@ static inline bool isAudioSampleBuffer (void* sourceData, size_t sourceDataSize,
     const float** channelList = reinterpret_cast<const float**> (sourceData);
 
     // get channel list pointers
-    Array<const float*> channelPointers;
+    juce::Array<const float*> channelPointers;
     for (int i = 0; i < maxNumChannels; ++i)
     {
         const float* channelPointer = channelList[i];
@@ -290,12 +290,12 @@ static inline bool isAudioSampleBuffer (void* sourceData, size_t sourceDataSize,
     const int expectedNumSamples = ((int) sourceDataSize - channelListSize) / (channelPointers.size() * (int) sizeof (float));
     const int bytesPerChannel = expectedNumSamples * (int) sizeof (float);
 
-    const float* startOfChannels = reinterpret_cast<float*> (addBytesToPointer (sourceData, channelListSize));
+    const float* startOfChannels = reinterpret_cast<float*> (juce::addBytesToPointer (sourceData, channelListSize));
 
     // compare to sample data pointers
     for (int i = 0; i < channelPointers.size(); ++i)
     {
-        const float* channelPointer = addBytesToPointer (startOfChannels, (i * bytesPerChannel));
+        const float* channelPointer = juce::addBytesToPointer (startOfChannels, (i * bytesPerChannel));
         if (channelPointer != channelPointers[i])
             return false;
     }
@@ -315,12 +315,12 @@ static inline bool isAudioSampleBuffer (void* sourceData, size_t sourceDataSize,
 
     @see AudioSampleBufferAudioFormat, getNumBytesForAudioSampleBuffer, AudioSampleBuffer
  */
-static inline bool isAudioSampleBuffer (InputStream& inputStream,
-                                        uint32 &numChannels, int64 &numSamples,
+static inline bool isAudioSampleBuffer (juce::InputStream& inputStream,
+                                        uint32 &numChannels, juce::int64 &numSamples,
                                         int maxNumChannels = 128)
 {
     // get start samples
-    Array<float> channelStartSamples;
+    juce::Array<float> channelStartSamples;
     for (int i = 0; i < maxNumChannels; ++i)
     {
         float* channelPointer;
@@ -335,9 +335,9 @@ static inline bool isAudioSampleBuffer (InputStream& inputStream,
     if (channelStartSamples.size() == 0)
         return false;
 
-    const int64 numChannelStartSamples = (int64) channelStartSamples.size();
-    const int64 channelListSize = (numChannelStartSamples + 1) * (int64) sizeof (float*);
-    const int64 expectedNumSamples = (inputStream.getTotalLength() - channelListSize) / (numChannelStartSamples * (int64) sizeof (float));
+    const juce::int64 numChannelStartSamples = (juce::int64) channelStartSamples.size();
+    const juce::int64 channelListSize = (numChannelStartSamples + 1) * (juce::int64) sizeof (float*);
+    const juce::int64 expectedNumSamples = (inputStream.getTotalLength() - channelListSize) / (numChannelStartSamples * (juce::int64) sizeof (float));
     const int bytesPerChannel = (int) expectedNumSamples * (int) sizeof (float);
 
     // compare sample values

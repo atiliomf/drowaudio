@@ -45,24 +45,24 @@
 /** Returns the Resources folder in the package contents on a Mac and if an equivalent exists on Windows.
     This will return File::nonexistent if the file does not exist so check for this first.
 */
-inline static File getResourcesFolder()
+inline static juce::File getResourcesFolder()
 {
-    return File::getSpecialLocation (File::currentExecutableFile).getParentDirectory().getParentDirectory().getChildFile ("Resources");
+    return juce::File::getSpecialLocation (juce::File::currentExecutableFile).getParentDirectory().getParentDirectory().getChildFile ("Resources");
 }
 
 /** If the String passed in is a local path, this will return a string with the file://localhost part
     of the file path stripped and any escaped characters (e.g. %20) converted to ascii
  */
-inline static String stripFileProtocolForLocal (const String& pathToStrip)
+inline static juce::String stripFileProtocolForLocal (const juce::String& pathToStrip)
 {
     if (pathToStrip.startsWith ("file://localhost"))
     {
        #if JUCE_WINDOWS
-        String temp (pathToStrip.substring (pathToStrip.indexOf (7, "/") + 1));
+        juce::String temp (pathToStrip.substring (pathToStrip.indexOf (7, "/") + 1));
        #else
-        String temp (pathToStrip.substring (pathToStrip.indexOf (7, "/")));
+        juce::String temp (pathToStrip.substring (pathToStrip.indexOf (7, "/")));
        #endif
-        return URL::removeEscapeChars (temp);
+        return juce::URL::removeEscapeChars (temp);
     }
 
     return {};
@@ -71,7 +71,7 @@ inline static String stripFileProtocolForLocal (const String& pathToStrip)
 /** Converts an iTunes formatted date string (e.g. 2010-12-27T17:44:32Z)
     into a Time object.
  */
-inline static Time parseITunesDateString (const String& dateString)
+inline static juce::Time parseITunesDateString (const juce::String& dateString)
 {
     int year    = dateString.substring (0, 4).getIntValue();
     int month   = dateString.substring (5, 7).getIntValue() - 1;
@@ -80,7 +80,7 @@ inline static Time parseITunesDateString (const String& dateString)
     int minutes = dateString.substring (14, 16).getIntValue();
     int seconds = dateString.substring (17, 19).getIntValue();
 
-    return Time (year, month, day, hours, minutes, seconds, 0, true);
+    return juce::Time (year, month, day, hours, minutes, seconds, 0, true);
 }
 
 /** Reverses an array */
@@ -129,28 +129,28 @@ void reverseTwoArrays (Type* array1, Type* array2, int length)
     @param trackName    The track name to look for.
     @param retryLimit    An optional number of retries as sometimes the URL won't load first time.
 */
-static inline String findKeyFromChemicalWebsite (const String& releaseNo, const String& trackName)
+static inline juce::String findKeyFromChemicalWebsite (const juce::String& releaseNo, const juce::String& trackName)
 {
-    URL chemicalURL ("http://www.chemical-records.co.uk/sc/servlet/Info");
+    juce::URL chemicalURL ("http://www.chemical-records.co.uk/sc/servlet/Info");
     chemicalURL = chemicalURL.withParameter ("Track", releaseNo);
 
-    String pageAsString (chemicalURL.readEntireTextStream());
-    String trackInfo (pageAsString.fromFirstOccurrenceOf ("<table class=\"tracks\" cellspacing=\"0\" cellpadding=\"4\">", true, false));
+    juce::String pageAsString (chemicalURL.readEntireTextStream());
+    juce::String trackInfo (pageAsString.fromFirstOccurrenceOf ("<table class=\"tracks\" cellspacing=\"0\" cellpadding=\"4\">", true, false));
     trackInfo = trackInfo.upToFirstOccurrenceOf("</table>", true, false);
 
-    std::unique_ptr<XmlElement> tracksXml (XmlDocument::parse (trackInfo));
+    std::unique_ptr<juce::XmlElement> tracksXml (juce::XmlDocument::parse (trackInfo));
 
     if (tracksXml != nullptr)
     {
-        XmlElement* tracksElem (XmlHelpers::findXmlElementContainingSubText (tracksXml.get(), trackName));
+        juce::XmlElement* tracksElem (XmlHelpers::findXmlElementContainingSubText (tracksXml.get(), trackName));
 
         if (tracksElem != nullptr)
         {
-            XmlElement* nextElem = tracksElem->getNextElement();
+            juce::XmlElement* nextElem = tracksElem->getNextElement();
 
             if (nextElem != nullptr)
             {
-                XmlElement* keyElem = nextElem->getFirstChildElement();
+                juce::XmlElement* keyElem = nextElem->getFirstChildElement();
 
                 if (keyElem != nullptr)
                     return keyElem->getAllSubText();
@@ -166,18 +166,18 @@ static inline String findKeyFromChemicalWebsite (const String& releaseNo, const 
 
     Note the samples must be in the range of 1-0 and the line will be stretched to fit the whole image.
 */
-static inline void drawBufferToImage (const Image& image, const float* samples, int numSamples, Colour colour, float thickness)
+static inline void drawBufferToImage (const juce::Image& image, const float* samples, int numSamples, juce::Colour colour, float thickness)
 {
     if (image.isNull())
         return;
 
     jassert (image.getWidth() > 0 && image.getHeight() > 0);
 
-    Graphics g (image);
+    juce::Graphics g (image);
     g.setColour (colour);
     const float imageXScale = image.getWidth() / (float) numSamples;
 
-    Path p;
+    juce::Path p;
     bool isFirst = true;
 
     for (int i = 0; i < numSamples; ++i)
@@ -194,20 +194,20 @@ static inline void drawBufferToImage (const Image& image, const float* samples, 
         p.lineTo (x, y);
     }
 
-    g.strokePath (p, PathStrokeType (thickness));
+    g.strokePath (p, juce::PathStrokeType (thickness));
 }
 
 /** Dumps a given image to a File in png format.
 
     If the file parameter is nonexistant a temp file will be created on the desktop.
 */
-static inline void saveImageToFile (const Image& image, File file = {})
+static inline void saveImageToFile (const juce::Image& image, juce::File file = {})
 {
     if (! file.exists())
-        file = File::getSpecialLocation (File::userDesktopDirectory).getNonexistentChildFile ("tempImage", ".png");
+        file = juce::File::getSpecialLocation (juce::File::userDesktopDirectory).getNonexistentChildFile ("tempImage", ".png");
 
-    PNGImageFormat format;
-    std::unique_ptr<OutputStream> os (file.createOutputStream());
+    juce::PNGImageFormat format;
+    std::unique_ptr<juce::OutputStream> os (file.createOutputStream());
 
     if (os != nullptr)
         format.writeImageToStream (image, *os);
@@ -219,40 +219,40 @@ static inline void saveImageToFile (const Image& image, File file = {})
     This is somewhat obfuscated but makes it easy to transfer ValueTrees as var objects
     such as when using them as DragAndDropTarget::SourceDetails::description members.
 */
-class ReferenceCountedValueTree : public ReferenceCountedObject
+class ReferenceCountedValueTree : public juce::ReferenceCountedObject
 {
 public:
     /** Creates a ReferenceCountedValueTree for a given ValueTree. */
-    ReferenceCountedValueTree (const ValueTree& treeToReference) :
+    ReferenceCountedValueTree (const juce::ValueTree& treeToReference) :
         tree (treeToReference)
     {
     }
 
     /** Sets the ValueTree being held. */
-    void setValueTree (const ValueTree& newTree)
+    void setValueTree (const juce::ValueTree& newTree)
     {
         tree = newTree;
     }
 
     /** Returns the ValueTree being held. */
-    ValueTree getValueTree() const { return tree; }
+    juce::ValueTree getValueTree() const { return tree; }
 
-    typedef ReferenceCountedObjectPtr<ReferenceCountedValueTree> Ptr;
+    typedef juce::ReferenceCountedObjectPtr<ReferenceCountedValueTree> Ptr;
 
     /** Provides a simple way of getting the tree from a var object which
         is a ReferencedCountedValueTree.
     */
-    static inline ValueTree getTreeFromObject (const var& treeObject)
+    static inline juce::ValueTree getTreeFromObject (const juce::var& treeObject)
     {
         ReferenceCountedValueTree* refTree
             = dynamic_cast<ReferenceCountedValueTree*> (treeObject.getObject());
 
-        return refTree == nullptr ? ValueTree() : refTree->getValueTree();
+        return refTree == nullptr ? juce::ValueTree() : refTree->getValueTree();
     }
 
 private:
     //==============================================================================
-    ValueTree tree;
+    juce::ValueTree tree;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReferenceCountedValueTree)
 };
@@ -263,42 +263,42 @@ private:
     This is useful so that Identifiers can be passed around as var objects
     without having to convert them to Strings and back which defeats the point of them.
  */
-class ReferenceCountedIdentifier : public ReferenceCountedObject
+class ReferenceCountedIdentifier : public juce::ReferenceCountedObject
 {
 public:
     /** Creates a ReferenceCountedIdentifier for a given Identifier. */
-    ReferenceCountedIdentifier (const Identifier& identifierToReference) :
+    ReferenceCountedIdentifier (const juce::Identifier& identifierToReference) :
         identifier (identifierToReference)
     {
     }
 
     /** Sets the Identifier to be held.
      */
-    void setIdentifier (const Identifier& newIdentifier)
+    void setIdentifier (const juce::Identifier& newIdentifier)
     {
         identifier = newIdentifier;
     }
 
     /** Returns the Identifier being held. */
-    const Identifier& getIdentifier() const { return identifier; }
+    const juce::Identifier& getIdentifier() const { return identifier; }
 
-    typedef ReferenceCountedObjectPtr<ReferenceCountedIdentifier> Ptr;
+    typedef juce::ReferenceCountedObjectPtr<ReferenceCountedIdentifier> Ptr;
 
     //==============================================================================
     /** Provides a simple way of getting the Identifier from a var object which
         is a ReferenceCountedIdentifier.
     */
-    static inline Identifier getIdentifierFromObject (const var& identiferObject)
+    static inline juce::Identifier getIdentifierFromObject (const juce::var& identiferObject)
     {
         ReferenceCountedIdentifier* refIdentifer
             = dynamic_cast<ReferenceCountedIdentifier*> (identiferObject.getObject());
 
-        return refIdentifer == nullptr ? Identifier::null : refIdentifer->getIdentifier();
+        return refIdentifer == nullptr ? juce::Identifier::null : refIdentifer->getIdentifier();
     }
 
 private:
     //==============================================================================
-    Identifier identifier;
+    juce::Identifier identifier;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReferenceCountedIdentifier)
 };
@@ -309,7 +309,7 @@ private:
     This can be a useful way of managing a MemoryBlock's lifetime and also enables
     you to pass it around in a ValueTree.
 */
-class ReferencedCountedMemoryBlock : public ReferenceCountedObject
+class ReferencedCountedMemoryBlock : public juce::ReferenceCountedObject
 {
 public:
     /** Creates a ReferencedCountedMemoryBlock with a blank MemoryBlock.
@@ -321,7 +321,7 @@ public:
         Note that this will take a copy of the data so you can dispose of the the
         block passed in as you like.
      */
-    ReferencedCountedMemoryBlock (const MemoryBlock& memoryBlockToReference)
+    ReferencedCountedMemoryBlock (const juce::MemoryBlock& memoryBlockToReference)
         : memoryBlock (memoryBlockToReference)
     {}
 
@@ -337,12 +337,12 @@ public:
 
     /** Returns the MemoryBlock being held.
      */
-    const MemoryBlock& getMemoryBlock() const { return memoryBlock; }
+    const juce::MemoryBlock& getMemoryBlock() const { return memoryBlock; }
 
     /** Provides a simple way of getting the MemoryBlock from a var object which
         is a ReferencedCountedMemoryBlock.
      */
-    static inline const MemoryBlock* getMemoryBlockFromObject (const var& blockObject)
+    static inline const juce::MemoryBlock* getMemoryBlockFromObject (const juce::var& blockObject)
     {
         ReferencedCountedMemoryBlock* refBlock
             = dynamic_cast<ReferencedCountedMemoryBlock*> (blockObject.getObject());
@@ -350,11 +350,11 @@ public:
         return refBlock == nullptr ? nullptr : &refBlock->getMemoryBlock();
     }
 
-    typedef ReferenceCountedObjectPtr<ReferencedCountedMemoryBlock> Ptr;
+    typedef juce::ReferenceCountedObjectPtr<ReferencedCountedMemoryBlock> Ptr;
 
 private:
     //==============================================================================
-    MemoryBlock memoryBlock;
+    juce::MemoryBlock memoryBlock;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ReferencedCountedMemoryBlock)
 };
@@ -365,13 +365,13 @@ private:
     This is a helper method to conveniently write a ValueTree to a File,
     optionally storing it as Xml.
 */
-static inline bool writeValueTreeToFile (const ValueTree& treeToWrite, const File& fileToWriteTo, bool asXml = true)
+static inline bool writeValueTreeToFile (const juce::ValueTree& treeToWrite, const juce::File& fileToWriteTo, bool asXml = true)
 {
     if (fileToWriteTo.hasWriteAccess())
     {
         if (asXml)
         {
-            std::unique_ptr<XmlElement> treeAsXml (treeToWrite.createXml());
+            std::unique_ptr<juce::XmlElement> treeAsXml (treeToWrite.createXml());
 
             if (treeAsXml != nullptr)
             {
@@ -382,8 +382,8 @@ static inline bool writeValueTreeToFile (const ValueTree& treeToWrite, const Fil
             return false;
         }
 
-        TemporaryFile tempFile (fileToWriteTo);
-        std::unique_ptr<FileOutputStream> outputStream (tempFile.getFile().createOutputStream());
+        juce::TemporaryFile tempFile (fileToWriteTo);
+        std::unique_ptr<juce::FileOutputStream> outputStream (tempFile.getFile().createOutputStream());
 
         if (outputStream != nullptr)
         {
@@ -403,19 +403,19 @@ static inline bool writeValueTreeToFile (const ValueTree& treeToWrite, const Fil
     attempt to read it as binary. If this also fails it will return an invalid
     ValueTree.
 */
-static inline ValueTree readValueTreeFromFile (const File& fileToReadFrom)
+static inline juce::ValueTree readValueTreeFromFile (const juce::File& fileToReadFrom)
 {
-    std::unique_ptr<XmlElement> treeAsXml (XmlDocument::parse (fileToReadFrom));
+    std::unique_ptr<juce::XmlElement> treeAsXml (juce::XmlDocument::parse (fileToReadFrom));
     if (treeAsXml != nullptr)
     {
-        return ValueTree::fromXml (*treeAsXml);
+        return juce::ValueTree::fromXml (*treeAsXml);
     }
 
-    std::unique_ptr<FileInputStream> fileInputStream (fileToReadFrom.createInputStream());
+    std::unique_ptr<juce::FileInputStream> fileInputStream (fileToReadFrom.createInputStream());
     if (fileInputStream != nullptr
         && fileInputStream->openedOk())
     {
-        return ValueTree::readFromStream (*fileInputStream);
+        return juce::ValueTree::readFromStream (*fileInputStream);
     }
 
     return {};
@@ -439,7 +439,7 @@ public:
         Thsi will read the contents of the File into the internal ValueTree which
         you can then retrieve with the getTree() method.
     */
-    ScopedValueTreeFile (const File& sourceFile)
+    ScopedValueTreeFile (const juce::File& sourceFile)
         : asXml (true)
     {
         setFile (sourceFile);
@@ -457,20 +457,20 @@ public:
         This will attempt to read the contents of the File into the ValueTree which
         you can obtain using the getTree() method.
      */
-    void setFile (const File& newFile) { file = newFile; tree = readValueTreeFromFile (file); }
+    void setFile (const juce::File& newFile) { file = newFile; tree = readValueTreeFromFile (file); }
 
     /** Saves the file to disk using a TemporaryFile in case there are any problems. */
-    Result save()
+    juce::Result save()
     {
-        return writeValueTreeToFile (tree, file, asXml) ? Result::ok()
-                                                        : Result::fail (TRANS ("Error saving file to disk"));
+        return writeValueTreeToFile (tree, file, asXml) ? juce::Result::ok()
+                                                        : juce::Result::fail (TRANS ("Error saving file to disk"));
     }
 
     /** Returns the ValueTree being used. */
-    ValueTree getTree() const { return tree; }
+    juce::ValueTree getTree() const { return tree; }
 
     /** Returns the File being used. */
-    const File& getFile() const { return file; }
+    const juce::File& getFile() const { return file; }
 
     /** Sets the tree to save to the file as XML or binary data. */
     void setSaveAsXml (bool saveAsXml) { asXml = saveAsXml; }
@@ -481,8 +481,8 @@ public:
 private:
     //==============================================================================
     bool asXml;
-    File file;
-    ValueTree tree;
+    juce::File file;
+    juce::ValueTree tree;
 
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScopedValueTreeFile)
@@ -492,11 +492,11 @@ private:
 /** Simple utility class to send a change message when it goes out of scope. */
 struct ScopedChangeSender
 {
-    ScopedChangeSender (ChangeBroadcaster& owner) : broadcaster (owner) {}
+    ScopedChangeSender (juce::ChangeBroadcaster& owner) : broadcaster (owner) {}
     ~ScopedChangeSender() { broadcaster.sendChangeMessage(); }
 
 private:
-    ChangeBroadcaster& broadcaster;
+    juce::ChangeBroadcaster& broadcaster;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ScopedChangeSender)
 };

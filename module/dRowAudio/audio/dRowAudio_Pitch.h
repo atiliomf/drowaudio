@@ -73,15 +73,15 @@ public:
     //==============================================================================
     /** Returns a unicode sharp symbol.
      */
-    static const juce_wchar getSharpSymbol() noexcept   { return *CharPointer_UTF8 ("\xe2\x99\xaf"); }
+    static const juce::juce_wchar getSharpSymbol() noexcept   { return *juce::CharPointer_UTF8 ("\xe2\x99\xaf"); }
 
     /** Returns a unicode flat symbol.
      */
-    static const juce_wchar getFlatSymbol() noexcept    { return *CharPointer_UTF8 ("\xe2\x99\xad"); }
+    static const juce::juce_wchar getFlatSymbol() noexcept    { return *juce::CharPointer_UTF8 ("\xe2\x99\xad"); }
 
     /** Returns a unicode natural symbol.
      */
-    static const juce_wchar getNaturalSymbol() noexcept { return *CharPointer_UTF8 ("\xe2\x99\xae"); }
+    static const juce::juce_wchar getNaturalSymbol() noexcept { return *juce::CharPointer_UTF8 ("\xe2\x99\xae"); }
 
     //==============================================================================
     /** Creates a Pitch object from a given frequency in Hertz e.g 440.
@@ -116,10 +116,10 @@ public:
 
         @see getSharpSymbol, getFlatSymbol
      */
-    static Pitch fromNoteName (const String& noteName) noexcept
+    static Pitch fromNoteName (const juce::String& noteName) noexcept
     {
-        const String octaveName (noteName.retainCharacters ("0123456789"));
-        const String pitchClassName (noteName.toLowerCase().retainCharacters (getValidPitchClassLetters()));
+        const juce::String octaveName (noteName.retainCharacters ("0123456789"));
+        const juce::String pitchClassName (noteName.toLowerCase().retainCharacters (getValidPitchClassLetters()));
 
         const int octave = octaveName.getIntValue();
         const int pitchClass = getPitchClass (pitchClassName);
@@ -148,13 +148,13 @@ public:
 
     /** Returns the note name of the pitch e.g. 440 = A4.
      */
-    inline String getMidiNoteName() const noexcept
+    inline juce::String getMidiNoteName() const noexcept
     {
         const int midiNote = (int) getMidiNote();
         const int pitchClass = midiNote % 12;
         const int octave = midiNote / 12 - 1;
 
-        String noteName;
+        juce::String noteName;
         noteName << getNoteName (pitchClass, true) << octave;
 
         return noteName;
@@ -167,12 +167,12 @@ private:
     //==============================================================================
     /*  Converts a pitch class number in the range of 0-12 to a letter.
      */
-    static String getNoteName (int pitchClass, bool asSharps) noexcept
+    static juce::String getNoteName (int pitchClass, bool asSharps) noexcept
     {
         static const char* const sharpNoteNames[] = { "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B" };
         static const char* const flatNoteNames[]  = { "C", "Db", "D", "Eb", "E", "F", "Gb", "G", "Ab", "A", "Bb", "B" };
 
-        if (isPositiveAndBelow (pitchClass, 12))
+        if (juce::isPositiveAndBelow (pitchClass, 12))
             return asSharps ? sharpNoteNames[pitchClass] : flatNoteNames[pitchClass];
         else
             return {};
@@ -182,14 +182,14 @@ private:
         If the string is not in the required format i.e. A#4 etc. this
         will return -1.
      */
-    static int getPitchClass (const String& pitchClassName) noexcept
+    static int getPitchClass (const juce::String& pitchClassName) noexcept
     {
         int pitchClass = -1;
         const int numChars = pitchClassName.length();
 
         if (numChars > 0)
         {
-            const juce_wchar base = pitchClassName.toLowerCase()[0];
+            const juce::juce_wchar base = pitchClassName.toLowerCase()[0];
 
             switch (base)
             {
@@ -206,7 +206,7 @@ private:
 
         if (numChars > 1)
         {
-            const juce_wchar sharpOrFlat = pitchClassName[1];
+            const juce::juce_wchar sharpOrFlat = pitchClassName[1];
 
             switch (sharpOrFlat)
             {
@@ -228,9 +228,9 @@ private:
 
     /*  Returns the letters valid for a pitch class.
      */
-    static const String getValidPitchClassLetters()
+    static const juce::String getValidPitchClassLetters()
     {
-        String chars ("abcdefg#b");
+        juce::String chars ("abcdefg#b");
         chars << getSharpSymbol() << getFlatSymbol();
         return chars;
     }

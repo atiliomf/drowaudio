@@ -87,7 +87,7 @@ void MusicLibraryTable::setLibraryToUse (ITunesLibrary* library)
     library->addListener(this);
 }
 
-void MusicLibraryTable::setFilterText (const String& filterString)
+void MusicLibraryTable::setFilterText (const juce::String& filterString)
 {
     currentFilterText = filterString;
 
@@ -101,7 +101,7 @@ void MusicLibraryTable::setFilterText (const String& filterString)
     }
     else
     {
-        filteredDataList = ValueTree (dataList.getType());
+        filteredDataList = juce::ValueTree (dataList.getType());
 
         for (int e = 0; e < dataList.getNumChildren(); ++e)
         {
@@ -183,11 +183,11 @@ void MusicLibraryTable::paintCell (Graphics& g,
 
     {
         const ScopedLock sl (currentLibrary->getParserLock());
-        const ValueTree rowElement (filteredDataList.getChild (rowNumber));
+        const juce::ValueTree rowElement (filteredDataList.getChild (rowNumber));
 
         if (rowElement.isValid())
         {
-            String text;
+            juce::String text;
 
             if (columnId == MusicColumns::Length)
                 text = secondsToTimeLength (rowElement[MusicColumns::columnNames[columnId]].toString().getIntValue());
@@ -250,11 +250,11 @@ int MusicLibraryTable::getColumnAutoSizeWidth (int columnId)
     for (int i = getNumRows(); --i >= 0;)
     {
         const ScopedLock sl (currentLibrary->getParserLock());
-        const ValueTree rowElement (filteredDataList.getChild (i));
+        const juce::ValueTree rowElement (filteredDataList.getChild (i));
 
         if (rowElement.isValid())
         {
-            const String text (rowElement[MusicColumns::columnNames[columnId]].toString());
+            const juce::String text (rowElement[MusicColumns::columnNames[columnId]].toString());
             widest = jmax (widest, font.getStringWidth (text));
         }
     }
@@ -284,7 +284,7 @@ var MusicLibraryTable::getDragSourceDescription (const SparseSet<int>& currently
             const ScopedLock sl (currentLibrary->getParserLock());
 
             // get child from main tree with same LibID
-            const ValueTree& tree (filteredDataList.getChild (currentlySelectedRows[i]));
+            const juce::ValueTree& tree (filteredDataList.getChild (currentlySelectedRows[i]));
 
             ReferenceCountedValueTree::Ptr childTree = new ReferenceCountedValueTree (tree);
             itemsArray.append (childTree.get());

@@ -35,16 +35,16 @@
 #if DROWAUDIO_USE_CURL
 
 //==============================================================================
-static StringArray getFilesForDirectory (const String& fullPath)
+static juce::StringArray getFilesForDirectory (const juce::String& fullPath)
 {
-    StringArray files;
+    juce::StringArray files;
     files.add ("..");
 
-    File cwd (fullPath);
+    juce::File cwd (fullPath);
     if (cwd.isDirectory())
     {
-        Array<File> childFiles;
-        cwd.findChildFiles (childFiles, File::findFilesAndDirectories, false);
+        juce::Array<juce::File> childFiles;
+        cwd.findChildFiles (childFiles, juce::File::findFilesAndDirectories, false);
 
         for (int i = 0; i < childFiles.size(); ++i)
             files.add (childFiles[i].getFileName());
@@ -55,7 +55,7 @@ static StringArray getFilesForDirectory (const String& fullPath)
 
 //==============================================================================
 LocalDirectoryListBoxModel::LocalDirectoryListBoxModel()
-    : currentWorkingDirectory (File::getSpecialLocation (File::userDesktopDirectory))
+    : currentWorkingDirectory (juce::File::getSpecialLocation (juce::File::userDesktopDirectory))
 {
     setContents (getFilesForDirectory (currentWorkingDirectory.getFullPathName()));
 }
@@ -65,32 +65,32 @@ int LocalDirectoryListBoxModel::getNumRows()
     return itemList.size();
 }
 
-void LocalDirectoryListBoxModel::paintListBoxItem (int rowNumber, Graphics& g,
+void LocalDirectoryListBoxModel::paintListBoxItem (int rowNumber, juce::Graphics& g,
                                                    int width, int height, bool rowIsSelected)
 {
     if (rowIsSelected)
     {
-        g.setColour (Colours::lightblue);
+        g.setColour (juce::Colours::lightblue);
         g.fillAll();
     }
 
     const int h = height;
     const int m = (int) (height * 0.15f);
 
-    Rectangle<float> imageRect ((float) m, (float) m, (float) (h - (2 * m)),  (float) (h - (2 * m)));
+    juce::Rectangle<float> imageRect ((float) m, (float) m, (float) (h - (2 * m)),  (float) (h - (2 * m)));
 
     if (currentWorkingDirectory.getChildFile (itemList[rowNumber]).isDirectory())
-        LookAndFeel::getDefaultLookAndFeel().getDefaultFolderImage()->drawWithin (g, imageRect, RectanglePlacement (0), 1.0f);
+        juce::LookAndFeel::getDefaultLookAndFeel().getDefaultFolderImage()->drawWithin (g, imageRect, juce::RectanglePlacement (0), 1.0f);
     else
-        LookAndFeel::getDefaultLookAndFeel().getDefaultDocumentFileImage()->drawWithin (g, imageRect, RectanglePlacement (RectanglePlacement::centred), 1.0f);
+        juce::LookAndFeel::getDefaultLookAndFeel().getDefaultDocumentFileImage()->drawWithin (g, imageRect, juce::RectanglePlacement (juce::RectanglePlacement::centred), 1.0f);
 
-    g.setColour (Colours::black);
+    g.setColour (juce::Colours::black);
     g.drawFittedText (itemList[rowNumber],
                       height, 0, width - h - m, height,
-                      Justification::centredLeft, 1);
+                      juce::Justification::centredLeft, 1);
 }
 
-void LocalDirectoryListBoxModel::setContents (const StringArray& newContents)
+void LocalDirectoryListBoxModel::setContents (const juce::StringArray& newContents)
 {
     itemList = newContents;
 }
@@ -101,7 +101,7 @@ void LocalDirectoryListBoxModel::refresh()
     sendChangeMessage();
 }
 
-void LocalDirectoryListBoxModel::listBoxItemDoubleClicked (int row, const MouseEvent& /*e*/)
+void LocalDirectoryListBoxModel::listBoxItemDoubleClicked (int row, const juce::MouseEvent& /*e*/)
 {
     if (itemList[row] == "..")
     {
@@ -122,13 +122,13 @@ void LocalDirectoryListBoxModel::listBoxItemDoubleClicked (int row, const MouseE
     sendChangeMessage();
 }
 
-var LocalDirectoryListBoxModel::getDragSourceDescription (const SparseSet<int>& currentlySelectedRows)
+juce::var LocalDirectoryListBoxModel::getDragSourceDescription (const juce::SparseSet<int>& currentlySelectedRows)
 {
     if (currentlySelectedRows.size() > 0)
         if (currentWorkingDirectory.getChildFile (itemList[currentlySelectedRows[0]]).existsAsFile())
             return currentWorkingDirectory.getChildFile (itemList[currentlySelectedRows[0]]).getFullPathName();
 
-    return String();
+    return juce::String();
 }
 
 //==============================================================================
@@ -144,16 +144,16 @@ LocalDirectoryListBox::~LocalDirectoryListBox()
     model.removeChangeListener (this);
 }
 
-void LocalDirectoryListBox::paintOverChildren (Graphics& g)
+void LocalDirectoryListBox::paintOverChildren (juce::Graphics& g)
 {
     if (isInterestedInDrag)
     {
-        g.setColour (Colours::orange);
+        g.setColour (juce::Colours::orange);
         g.drawRect (getLocalBounds(), 3);
     }
 }
 
-void LocalDirectoryListBox::changeListenerCallback (ChangeBroadcaster* source)
+void LocalDirectoryListBox::changeListenerCallback (juce::ChangeBroadcaster* source)
 {
     if (source == &model)
     {
@@ -185,11 +185,11 @@ void LocalDirectoryListBox::itemDropped (const SourceDetails& dragSourceDetails)
     if (RemoteDirectoryListBox* remote = dynamic_cast<RemoteDirectoryListBox*> (dragSourceDetails.sourceComponent.get()))
     {
         DBG (dragSourceDetails.description.toString());
-        const String remoteFileName (dragSourceDetails.description.toString().fromLastOccurrenceOf ("/", true, false));
+        const juce::String remoteFileName (dragSourceDetails.description.toString().fromLastOccurrenceOf ("/", true, false));
 
         CURLEasySession& session (remote->getCURLSession());
         session.setRemotePath (dragSourceDetails.description.toString());
-        session.setLocalFile (File (model.getCurrentWorkingDirectory().getFullPathName() + remoteFileName));
+        session.setLocalFile (juce::File (model.getCurrentWorkingDirectory().getFullPathName() + remoteFileName));
         session.beginTransfer (false);
         model.refresh();
     }
