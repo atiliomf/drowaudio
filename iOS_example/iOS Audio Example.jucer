@@ -4,8 +4,7 @@
               companyName="dRowAudio" bundleIdentifier="com.dRowAudio.iOSAudioExample"
               jucerFormatVersion="1" useAppConfig="0" addUsingNamespaceToJuceHeader="0">
   <EXPORTFORMATS>
-    <XCODE_IPHONE targetFolder="Builds/iOS" UIStatusBarHidden="1" iosDevelopmentTeamID="QW276UHF22"
-                  customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&#9;&lt;key&gt;NSAppleMusicUsageDescription&lt;/key&gt;&#10;&lt;string&gt;This app requires access to the music library to function correctly.&lt;/string&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
+    <XCODE_IPHONE targetFolder="Builds/iOS" UIStatusBarHidden="1" customPList="&lt;plist&gt;&#10;&lt;dict&gt;&#10;&#9;&lt;key&gt;NSAppleMusicUsageDescription&lt;/key&gt;&#10;&lt;string&gt;This app requires access to the music library to function correctly.&lt;/string&gt;&#10;&lt;/dict&gt;&#10;&lt;/plist&gt;"
                   pListPreprocess="1" smallIcon="rgEc8A" bigIcon="rgEc8A">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="iOS Audio Example"
