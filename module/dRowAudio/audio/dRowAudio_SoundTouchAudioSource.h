@@ -96,8 +96,8 @@ private:
     int numberOfSamplesToBuffer, numberOfChannels;
     juce::AudioSampleBuffer buffer;
     juce::CriticalSection bufferStartPosLock;
-    juce::int64 volatile nextReadPos, effectiveNextPlayPos;
-    double volatile sampleRate;
+    juce::int64 /*volatile*/ nextReadPos, effectiveNextPlayPos;
+    double /*volatile*/ sampleRate;
     bool isPrepared;
 
     SoundTouchProcessor soundTouchProcessor;
