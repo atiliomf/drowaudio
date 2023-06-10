@@ -253,7 +253,7 @@ public:
 
                 if (list != nullptr)
                 {
-                    ListBoxModel* model = list->getModel();
+                    ListBoxModel* model = list->getListBoxModel();
 
                     if (model != nullptr)
                     {
