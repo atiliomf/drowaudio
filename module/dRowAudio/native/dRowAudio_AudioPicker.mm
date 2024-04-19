@@ -87,7 +87,8 @@ using drow::AudioPicker;
 
 + (UIViewController*) topLevelViewController
 {
-    return [UIApplication sharedApplication].keyWindow.rootViewController;
+    // TODO: return [UIApplication sharedApplication].keyWindow.rootViewController;
+    return nil;
 }
 
 @end
@@ -107,31 +108,31 @@ AudioPicker::~AudioPicker()
 void AudioPicker::show (bool allowMultipleSelection, Rectangle<int> areaToPointTo)
 {
     auto* controller = [JuceUIAudioPicker topLevelViewController];
-
+    
     if (controller != nil)
     {
         JuceUIAudioPicker* audioPicker = [[JuceUIAudioPicker alloc] initWithOwner: this];
-
+        
         if (audioPicker != nil)
         {
             [audioPicker retain];
             audioPicker.allowsPickingMultipleItems = allowMultipleSelection;
-
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPhone)
+            
+            if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPhone)
             {
                 [controller presentViewController: audioPicker animated: YES completion: nil];
             }
-            else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+            else if ([[UIDevice currentDevice] userInterfaceIdiom] == UIUserInterfaceIdiomPad)
             {
                 controller.modalPresentationStyle = UIModalPresentationPopover;
-            
-                CGRect fromFrame = CGRectMake (controller.view.center.x - 160.0f, 
-                                               controller.view.center.y, 
+                
+                CGRect fromFrame = CGRectMake (controller.view.center.x - 160.0f,
+                                               controller.view.center.y,
                                                320.0f, 480.0f);
-
+                
                 if (! areaToPointTo.isEmpty())
                 {
-                    fromFrame = CGRectMake (areaToPointTo.getX(), areaToPointTo.getY(), 
+                    fromFrame = CGRectMake (areaToPointTo.getX(), areaToPointTo.getY(),
                                             areaToPointTo.getWidth(), areaToPointTo.getHeight());
                 }
                 
@@ -142,16 +143,16 @@ void AudioPicker::show (bool allowMultipleSelection, Rectangle<int> areaToPointT
             }
         }
         else
-        {            
+        {
             UIAlertController* alert = [UIAlertController
-                                         alertControllerWithTitle:@"Error"
-                                         message:@"Could not load music library"
-                                         preferredStyle:UIAlertControllerStyleAlert];
+                                        alertControllerWithTitle:@"Error"
+                                        message:@"Could not load music library"
+                                        preferredStyle:UIAlertControllerStyleAlert];
             
             UIAlertAction* okAction = [UIAlertAction
-                                        actionWithTitle:@"Ok"
-                                        style:UIAlertActionStyleDefault
-                                        handler:^(UIAlertAction* action) { /* ok button action */ }];
+                                       actionWithTitle:@"Ok"
+                                       style:UIAlertActionStyleDefault
+                                       handler:^(UIAlertAction* action) { /* ok button action */ }];
             
             [alert addAction:okAction];
             
@@ -166,7 +167,7 @@ String AudioPicker::mpMediaItemToAvassetUrl (void* mpMediaItem)
 {
     MPMediaItem* item = (MPMediaItem*) mpMediaItem;
     NSURL* location = [item valueForProperty: MPMediaItemPropertyAssetURL];
-
+    
     return [location.absoluteString UTF8String];
 }
 
@@ -175,7 +176,7 @@ String AudioPicker::mpMediaItemToTitle (void* mpMediaItem)
 {
     MPMediaItem* item = (MPMediaItem*) mpMediaItem;
     NSString* property = [item valueForProperty: MPMediaItemPropertyTitle];
-
+    
     return CharPointer_UTF8 ([property UTF8String]);
 }
 
@@ -183,7 +184,7 @@ String AudioPicker::mpMediaItemToArtist (void* mpMediaItem)
 {
     MPMediaItem* item = (MPMediaItem*) mpMediaItem;
     NSString* property = [item valueForProperty: MPMediaItemPropertyArtist];
-
+    
     return CharPointer_UTF8 ([property UTF8String]);
 }
 
@@ -206,16 +207,16 @@ void AudioPicker::sendAudioPickerFinishedMessage (void* picker, void* info)
         JuceUIAudioPicker* audioPicker = (JuceUIAudioPicker*) picker;
         [audioPicker dismissViewControllerAnimated: YES completion: nil];
         [audioPicker release];
-
+        
         MPMediaItemCollection* mediaItemCollection = (MPMediaItemCollection*) info;
-
+        
         Array<void*> pickedMPMediaItems;
         for (uint32 i = 0; i < mediaItemCollection.count; ++i)
         {
             MPMediaItem* mediaItem = [mediaItemCollection.items objectAtIndex: i];
             pickedMPMediaItems.add (mediaItem);
         }
-
+        
         listeners.call (&Listener::audioPickerFinished, pickedMPMediaItems);
     }
 }
@@ -227,9 +228,10 @@ void AudioPicker::sendAudioPickerCancelledMessage (void* picker)
         JuceUIAudioPicker* audioPicker = (JuceUIAudioPicker*) picker;
         [audioPicker dismissViewControllerAnimated: YES completion: nil];
         [audioPicker release];
-
+        
         listeners.call (&Listener::audioPickerCancelled);
     }
 }
 
 #endif
+
