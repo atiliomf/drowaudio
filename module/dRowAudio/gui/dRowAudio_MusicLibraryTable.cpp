@@ -30,7 +30,7 @@
 */
 
 MusicLibraryTable::MusicLibraryTable()
-    : font              (12.0f),
+    : font              (FontOptions (12.0f)),
       currentLibrary    (nullptr),
       dataList          (MusicColumns::libraryIdentifier),
       filteredNumRows   (dataList.getNumChildren()),

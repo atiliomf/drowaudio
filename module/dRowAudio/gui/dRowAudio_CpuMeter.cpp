@@ -49,7 +49,7 @@ void CpuMeter::resized()
     const int w = getWidth();
     const int h = getHeight();
 
-    setFont ((h < (w * 0.24f) ? h : w * 0.24f));
+    setFont (Font (FontOptions (h < (w * 0.24f) ? h : w * 0.24f)));
 }
 
 void CpuMeter::timerCallback()

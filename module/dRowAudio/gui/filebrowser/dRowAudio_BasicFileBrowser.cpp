@@ -228,7 +228,7 @@ int BasicFileBrowser::getLongestWidth()
     FileListComponent* list = dynamic_cast<FileListComponent*> (fileListComponent.get());
     if (list != nullptr)
     {
-        Font temp (list->getRowHeight() * 0.7f);
+        Font temp (FontOptions (list->getRowHeight() * 0.7f));
         for (int i = 0; i < noFiles; ++i)
         {
             int itemWidth = temp.getStringWidth (fileList->getFile(i).getFileName());
