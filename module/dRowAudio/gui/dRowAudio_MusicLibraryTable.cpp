@@ -30,7 +30,12 @@
 */
 
 MusicLibraryTable::MusicLibraryTable()
-    : font              (FontOptions (12.0f)),
+    :
+#if JUCE_MAJOR_VERSION < 8
+      font              (12.0f),
+#else
+      font              (FontOptions (12.0f)),
+#endif
       currentLibrary    (nullptr),
       dataList          (MusicColumns::libraryIdentifier),
       filteredNumRows   (dataList.getNumChildren()),

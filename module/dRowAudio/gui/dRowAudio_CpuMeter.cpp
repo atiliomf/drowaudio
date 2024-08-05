@@ -48,8 +48,11 @@ void CpuMeter::resized()
 {
     const int w = getWidth();
     const int h = getHeight();
-
+#if JUCE_MAJOR_VERSION < 8
+    setFont (Font (h < (w * 0.24f) ? h : w * 0.24f));
+#else
     setFont (Font (FontOptions (h < (w * 0.24f) ? h : w * 0.24f)));
+#endif
 }
 
 void CpuMeter::timerCallback()
