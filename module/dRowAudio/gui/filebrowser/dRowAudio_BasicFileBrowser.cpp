@@ -235,8 +235,8 @@ int BasicFileBrowser::getLongestWidth()
 #endif
         for (int i = 0; i < noFiles; ++i)
         {
-            int itemWidth = temp.getStringWidth (fileList->getFile(i).getFileName());
-            if (itemWidth >    stringWidth)
+            int itemWidth = TextLayout::getStringWidth (temp, fileList->getFile(i).getFileName());
+            if (itemWidth > stringWidth)
                 stringWidth = itemWidth;
         }
         stringWidth += (2 * list->getRowHeight()) + 30;
